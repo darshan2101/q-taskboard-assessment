@@ -50,10 +50,21 @@ Output:
 $ npm test
 ```
 
-Output (before fixes):
+Output (all tests passing after fixes):
 ```
-[PLACEHOLDER — replace with actual output]
-Note: Expected ~8–10 tests to fail (Bugs #1–#4 related tests).
+ RUN  v2.1.8 D:/q-taskboard-assessment
+
+ ✓ src/tests/activity.test.ts (7)
+ ✓ src/tests/auth.test.ts (2)
+ ✓ src/tests/bugs.test.ts (14) 585ms
+ ✓ src/tests/comments.test.ts (10)
+ ✓ src/tests/schemas.test.ts (7)
+ ✓ src/tests/TaskCard.test.tsx (3) 535ms
+
+ Test Files  6 passed (6)
+      Tests  43 passed (43)
+   Start at  12:16:28
+   Duration  9.96s (transform 1.92s, setup 6.76s, collect 6.28s, tests 1.68s, environment 25.04s, prepare 3.25s)
 ```
 
 ---
@@ -327,16 +338,19 @@ $ npm test
 
 Output:
 ```
-[PLACEHOLDER — replace with actual output]
-Note: Expected ~14+ tests passing, covering:
-  - Bug #1: SQL injection fixed
-  - Bug #2: IDOR fixed (membership check added)
-  - Bug #3: Password hash not leaked
-  - Bug #4: Race condition handled
-  - Comments: member/admin can post, viewer cannot
-  - Comments: GET returns oldest-first
-  - Activity: events fire and persist
-  - Activity: membership check on GET
+ RUN  v2.1.8 D:/q-taskboard-assessment
+
+ ✓ src/tests/activity.test.ts (7)
+ ✓ src/tests/auth.test.ts (2)
+ ✓ src/tests/bugs.test.ts (14) 585ms
+ ✓ src/tests/comments.test.ts (10)
+ ✓ src/tests/schemas.test.ts (7)
+ ✓ src/tests/TaskCard.test.tsx (3) 535ms
+
+ Test Files  6 passed (6)
+      Tests  43 passed (43)
+   Start at  12:16:28
+   Duration  9.96s (transform 1.92s, setup 6.76s, collect 6.28s, tests 1.68s, environment 25.04s, prepare 3.25s)
 ```
 
 ---
