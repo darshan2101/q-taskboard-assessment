@@ -31,7 +31,7 @@ export async function PATCH(req: NextRequest, { params }: Params) {
   if (!membership) return forbidden("you are not a member of this project");
   if (!canEditTasks(membership.role)) {
     return forbidden("viewers cannot update tasks");
-  }  
+  }
 
   const task = await prisma.task.update({
     where: { id },
@@ -42,8 +42,10 @@ export async function PATCH(req: NextRequest, { params }: Params) {
   });
 
   record(existing.projectId, task.id, user.id, "task_status_changed", {
-    from: existing.status, to: task.status,
+    from: existing.status,
+    to: task.status,
   }).catch(() => {});
+
   return NextResponse.json({ task });
 }
 
