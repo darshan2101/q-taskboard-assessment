@@ -27,6 +27,4 @@ export async function GET(req: NextRequest, { params }: Params) {
     include: { actor: { select: { id: true, name: true, email: true } } },
   });
   return NextResponse.json({ events });
-
-  return NextResponse.json({ events: [] });
 }
