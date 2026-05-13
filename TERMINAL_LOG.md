@@ -52,19 +52,20 @@ $ npm test
 
 Output (all tests passing after fixes):
 ```
- RUN  v2.1.8 D:/q-taskboard-assessment
+ RUN  v2.1.8 /app
 
- ✓ src/tests/activity.test.ts (7)
+ ✓ src/tests/TaskCard.test.tsx (3) 765ms
+ ✓ src/tests/activity.test.ts (7) 1696ms
  ✓ src/tests/auth.test.ts (2)
- ✓ src/tests/bugs.test.ts (14) 585ms
- ✓ src/tests/comments.test.ts (10)
+ ✓ src/tests/bugs.test.ts (14) 2476ms
+ ✓ src/tests/comments.test.ts (10) 1487ms
+ ✓ src/tests/export.test.ts (8) 3309ms
  ✓ src/tests/schemas.test.ts (7)
- ✓ src/tests/TaskCard.test.tsx (3) 535ms
 
- Test Files  6 passed (6)
-      Tests  43 passed (43)
-   Start at  12:16:28
-   Duration  9.96s (transform 1.92s, setup 6.76s, collect 6.28s, tests 1.68s, environment 25.04s, prepare 3.25s)
+ Test Files  7 passed (7)
+      Tests  51 passed (51)
+   Start at  07:00:01
+   Duration  10.35s (transform 11.01s, setup 6.20s, collect 15.66s, tests 9.77s, environment 17.23s, prepare 1.49s)
 ```
 
 ---
@@ -338,19 +339,20 @@ $ npm test
 
 Output:
 ```
- RUN  v2.1.8 D:/q-taskboard-assessment
+ RUN  v2.1.8 /app
 
- ✓ src/tests/activity.test.ts (7)
+ ✓ src/tests/TaskCard.test.tsx (3) 765ms
+ ✓ src/tests/activity.test.ts (7) 1696ms
  ✓ src/tests/auth.test.ts (2)
- ✓ src/tests/bugs.test.ts (14) 585ms
- ✓ src/tests/comments.test.ts (10)
+ ✓ src/tests/bugs.test.ts (14) 2476ms
+ ✓ src/tests/comments.test.ts (10) 1487ms
+ ✓ src/tests/export.test.ts (8) 3309ms
  ✓ src/tests/schemas.test.ts (7)
- ✓ src/tests/TaskCard.test.tsx (3) 535ms
 
- Test Files  6 passed (6)
-      Tests  43 passed (43)
-   Start at  12:16:28
-   Duration  9.96s (transform 1.92s, setup 6.76s, collect 6.28s, tests 1.68s, environment 25.04s, prepare 3.25s)
+ Test Files  7 passed (7)
+      Tests  51 passed (51)
+   Start at  07:00:01
+   Duration  10.35s (transform 11.01s, setup 6.20s, collect 15.66s, tests 9.77s, environment 17.23s, prepare 1.49s)
 ```
 
 ---
