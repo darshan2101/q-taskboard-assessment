@@ -28,6 +28,14 @@ export async function GET(req: NextRequest, { params }: Params) {
       owner: true,
       memberships: {
         include: { user: true },
+        select: {
+          id: true, 
+          email: true,
+          name: true,
+          role: true,
+          createdAt: true,
+          updatedAt: true
+        }
       },
       tasks: {
         include: {
