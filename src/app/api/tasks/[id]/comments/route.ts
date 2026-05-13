@@ -32,7 +32,7 @@ export async function GET(req: NextRequest, { params }: Params) {
     include: { author: { select: { id: true, name: true, email: true } } },
     orderBy: { createdAt: "asc" },
   });
-  return NextResponse.json({ comments: [] });
+  return NextResponse.json({ comments });
 }
 
 // POST /api/tasks/:id/comments
@@ -58,5 +58,5 @@ export async function POST(req: NextRequest, { params }: Params) {
     data: { taskId, authorId: user.id, body: parsed.data.body },
     include: { author: { select: { id: true, name: true, email: true } } },
   });
-  return NextResponse.json({ comment: null }, { status: 201 });
+  return NextResponse.json({ comment }, { status: 201 });
 }
