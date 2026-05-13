@@ -20,7 +20,7 @@ export async function GET(req: NextRequest) {
     orderBy: { createdAt: "desc" },
   });
 
-  const projects = memberships.map((m) => ({
+  const projects = memberships.map((m: typeof memberships[number]) => ({
     id: m.project.id,
     name: m.project.name,
     description: m.project.description,
