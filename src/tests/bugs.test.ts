@@ -91,7 +91,7 @@ function makeRequest(
   }
   init.headers = headers;
 
-  return new NextRequest(new URL(url, "http://localhost"), init);
+  return new NextRequest(new URL(url, "http://localhost"), init as any);
 }
 
 function makeParams(id: string) {
