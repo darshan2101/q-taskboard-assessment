@@ -342,9 +342,6 @@ describe("Bug #3 – GET /api/projects/[id] (passwordHash leak fix)", () => {
       id: true,
       email: true,
       name: true,
-      role: true,
-      createdAt: true,
-      updatedAt: true,
     };
     expect(callArg.include.owner.select).toEqual(safeUserSelect);
     expect(callArg.include.memberships.include.user.select).toEqual(safeUserSelect);

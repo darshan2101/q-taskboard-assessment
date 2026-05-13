@@ -91,7 +91,7 @@ const mockGetCurrentUser = getCurrentUser as ReturnType<typeof vi.fn>;
 // ---------------------------------------------------------------------------
 
 function makeRequest(method: string, url: string): NextRequest {
-  return new NextRequest(new URL(url, "http://localhost"), { method } as RequestInit);
+  return new NextRequest(new URL(url, "http://localhost"), { method });
 }
 
 // ---------------------------------------------------------------------------

@@ -1,4 +1,4 @@
-import { PrismaClient, Role, TaskStatus } from "@prisma/client";
+import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcryptjs";
 
 const prisma = new PrismaClient();
@@ -36,10 +36,10 @@ async function main() {
       ownerId: meera.id,
       memberships: {
         create: [
-          { userId: meera.id, role: Role.admin },
-          { userId: arjun.id, role: Role.member },
-          { userId: kavya.id, role: Role.member },
-          { userId: dev.id, role: Role.viewer },
+          { userId: meera.id, role: "admin" },
+          { userId: arjun.id, role: "member" },
+          { userId: kavya.id, role: "member" },
+          { userId: dev.id, role: "viewer" },
         ],
       },
     },
@@ -52,9 +52,9 @@ async function main() {
       ownerId: arjun.id,
       memberships: {
         create: [
-          { userId: arjun.id, role: Role.admin },
-          { userId: meera.id, role: Role.member },
-          { userId: lina.id, role: Role.member },
+          { userId: arjun.id, role: "admin" },
+          { userId: meera.id, role: "member" },
+          { userId: lina.id, role: "member" },
         ],
       },
     },
@@ -66,19 +66,19 @@ async function main() {
       description: "Retire legacy admin tools and consolidate into the new console.",
       ownerId: meera.id,
       memberships: {
-        create: [{ userId: meera.id, role: Role.admin }],
+        create: [{ userId: meera.id, role: "admin" }],
       },
     },
   });
 
   const launchTasks = [
-    { title: "Finalize launch date with marketing", status: TaskStatus.done, assignee: meera.id, position: 0 },
-    { title: "Draft press release", status: TaskStatus.review, assignee: arjun.id, position: 1 },
-    { title: "Record demo video", status: TaskStatus.in_progress, assignee: kavya.id, position: 2 },
-    { title: "Set up analytics dashboards", status: TaskStatus.in_progress, assignee: arjun.id, position: 3 },
-    { title: "Prepare customer email blast", status: TaskStatus.todo, assignee: kavya.id, position: 4 },
-    { title: "Update pricing page copy", status: TaskStatus.todo, assignee: null, position: 5 },
-    { title: "QA the new signup flow end-to-end", status: TaskStatus.todo, assignee: arjun.id, position: 6 },
+    { title: "Finalize launch date with marketing", status: "done", assignee: meera.id, position: 0 },
+    { title: "Draft press release", status: "review", assignee: arjun.id, position: 1 },
+    { title: "Record demo video", status: "in_progress", assignee: kavya.id, position: 2 },
+    { title: "Set up analytics dashboards", status: "in_progress", assignee: arjun.id, position: 3 },
+    { title: "Prepare customer email blast", status: "todo", assignee: kavya.id, position: 4 },
+    { title: "Update pricing page copy", status: "todo", assignee: null, position: 5 },
+    { title: "QA the new signup flow end-to-end", status: "todo", assignee: arjun.id, position: 6 },
   ];
 
   for (const t of launchTasks) {
@@ -96,11 +96,11 @@ async function main() {
   }
 
   const onboardingTasks = [
-    { title: "Map current onboarding funnel", status: TaskStatus.done, assignee: arjun.id, position: 0 },
-    { title: "Interview 5 recently-onboarded customers", status: TaskStatus.review, assignee: lina.id, position: 1 },
-    { title: "Wireframe new welcome screens", status: TaskStatus.in_progress, assignee: meera.id, position: 2 },
-    { title: "Audit current onboarding emails", status: TaskStatus.todo, assignee: lina.id, position: 3 },
-    { title: "Define success metric (TTFV target)", status: TaskStatus.todo, assignee: arjun.id, position: 4 },
+    { title: "Map current onboarding funnel", status: "done", assignee: arjun.id, position: 0 },
+    { title: "Interview 5 recently-onboarded customers", status: "review", assignee: lina.id, position: 1 },
+    { title: "Wireframe new welcome screens", status: "in_progress", assignee: meera.id, position: 2 },
+    { title: "Audit current onboarding emails", status: "todo", assignee: lina.id, position: 3 },
+    { title: "Define success metric (TTFV target)", status: "todo", assignee: arjun.id, position: 4 },
   ];
 
   for (const t of onboardingTasks) {
