@@ -2,7 +2,7 @@
  * Bug regression tests — all external dependencies are mocked.
  * No real database or auth is touched.
  */
-
+vi.mock("@/services/activityService", () => ({ record: vi.fn().mockResolvedValue(undefined) }));
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { NextRequest } from "next/server";
 
