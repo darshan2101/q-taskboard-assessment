@@ -20,14 +20,13 @@ export async function GET(req: NextRequest, { params }: Params) {
   const membership = await getProjectMembership(user.id, projectId);
   if (!membership) return forbidden("you are not a member of this project");
 
-  const q = req.nextUrl.searchParams.get("q");
+  const q = req.nextUrl.searchParams.get("q")?.replace(/'/g, "").trim();
 
   if (q) {
-    // search across title and description
     const sql = `
       SELECT id, project_id, title, description, status, assignee_id, created_by_id, position, created_at, updated_at
       FROM tasks
-      WHERE project_id = '${projectId}'
+      WHERE project_id = '${projectId}'::uuid
         AND (title ILIKE '%${q}%' OR description ILIKE '%${q}%')
       ORDER BY position ASC
     `;
