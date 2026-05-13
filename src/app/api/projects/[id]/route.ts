@@ -26,51 +26,17 @@ export async function GET(req: NextRequest, { params }: Params) {
     where: { id },
     include: {
       owner: {
-        select: {
-          id: true,
-          email: true,
-          name: true,
-          role: true,
-          createdAt: true,
-          updatedAt: true
-        }
+        select: { id: true, email: true, name: true }
       },
       memberships: {
         include: {
-          user: {
-            select: {
-              id: true,
-              email: true,
-              name: true,
-              role: true,
-              createdAt: true,
-              updatedAt: true
-            }
-          }
+          user: { select: { id: true, email: true, name: true } }
         },
       },
       tasks: {
         include: {
-          assignee: {
-            select: {
-              id: true,
-              email: true,
-              name: true,
-              role: true,
-              createdAt: true,
-              updatedAt: true
-            }
-          },
-          createdBy: {
-            select: {
-              id: true,
-              email: true,
-              name: true,
-              role: true,
-              createdAt: true,
-              updatedAt: true
-            }
-          },
+          assignee: { select: { id: true, email: true, name: true } },
+          createdBy: { select: { id: true, email: true, name: true } },
         },
         orderBy: [{ status: "asc" }, { position: "asc" }],
       },
