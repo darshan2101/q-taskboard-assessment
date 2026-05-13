@@ -1,3 +1,7 @@
+# Force LF for shell scripts (prevents CRLF issues in Docker on Windows)
+bin/* text eol=lf
+*.sh text eol=lf
+
 # Ensure AI conversation logs are tracked as text
 .ai-conversations/** text
 .claude/** text
