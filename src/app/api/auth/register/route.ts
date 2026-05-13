@@ -13,21 +13,35 @@ export async function POST(req: NextRequest) {
   }
 
   const { email, password, name } = parsed.data;
-
-  // convert constexisting check + creation into transcaction to prevent race conditions
-  const user = await prisma.$transaction(async (tx: { user: { findFirst: (arg0: { where: { email: string; }; }) => any; }; }) => {
-    const existing = await tx.user.findFirst({ where: { email } });
-    if (existing) {
-      return badRequest("an account with that email already exists");
-    }
+  try{
     const passwordHash = await bcrypt.hash(password, 10);
-    const user = await prisma.user.create({
-      data: { email, name, passwordHash },
-      select: { id: true, email: true, name: true },
-    });
-    return user;
-  });
 
-  const token = signToken({ userId: user.id, email: user.email });
-  return NextResponse.json({ user, token }, { status: 201 });
+    const user = await prisma.$transaction(async (tx: typeof prisma) => {
+      const existing = await tx.user.findUnique({ where: { email } });
+      if (existing) {
+        throw new Error("user already exists");
+      }
+      return tx.user.create({
+        data: {
+          email, name, passwordHash
+        },
+        select: {
+          id: true,
+          email: true,
+          name: true,
+          createdAt: true,
+          updatedAt: true
+        }      
+      });
+    }
+    );
+
+    const token = signToken({ userId: user.id, email: user.email });
+    return NextResponse.json({ user, token }, { status: 201 });
+  }catch(e){
+    if (e instanceof Error && e.message.includes("user already exists")) {
+      return badRequest("user already exists with this email");
+    }
+    throw e;
+  }
 }

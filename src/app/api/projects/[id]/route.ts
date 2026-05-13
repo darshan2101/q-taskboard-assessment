@@ -25,11 +25,9 @@ export async function GET(req: NextRequest, { params }: Params) {
   const project = await prisma.project.findUnique({
     where: { id },
     include: {
-      owner: true,
-      memberships: {
-        include: { user: true },
+      owner: {
         select: {
-          id: true, 
+          id: true,
           email: true,
           name: true,
           role: true,
@@ -37,10 +35,42 @@ export async function GET(req: NextRequest, { params }: Params) {
           updatedAt: true
         }
       },
+      memberships: {
+        include: {
+          user: {
+            select: {
+              id: true,
+              email: true,
+              name: true,
+              role: true,
+              createdAt: true,
+              updatedAt: true
+            }
+          }
+        },
+      },
       tasks: {
         include: {
-          assignee: true,
-          createdBy: true,
+          assignee: {
+            select: {
+              id: true,
+              email: true,
+              name: true,
+              role: true,
+              createdAt: true,
+              updatedAt: true
+            }
+          },
+          createdBy: {
+            select: {
+              id: true,
+              email: true,
+              name: true,
+              role: true,
+              createdAt: true,
+              updatedAt: true
+            }
+          },
         },
         orderBy: [{ status: "asc" }, { position: "asc" }],
       },
