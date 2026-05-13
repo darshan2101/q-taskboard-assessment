@@ -215,7 +215,7 @@ Output:
 $ curl -X POST http://localhost:3000/api/tasks/<task-id>/comments \
     -H "Authorization: Bearer <member-token>" \
     -H "Content-Type: application/json" \
-    -d '{"content":"This is a comment from a member"}'
+    -d '{"body":"This is a comment from a member"}'
 ```
 
 Response (201 Created):
@@ -229,7 +229,7 @@ Response (201 Created):
 $ curl -X POST http://localhost:3000/api/tasks/<task-id>/comments \
     -H "Authorization: Bearer <viewer-token>" \
     -H "Content-Type: application/json" \
-    -d '{"content":"Viewer trying to comment"}'
+    -d '{"body":"Viewer trying to comment"}'
 ```
 
 Response (403 Forbidden):
