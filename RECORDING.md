@@ -6,9 +6,9 @@
 
 ---
 
-## Cap/Loom Link
+## Google drive link
 
-[PLACEHOLDER — paste Loom/Cap URL after recording]
+https://drive.google.com/file/d/1NGM_lx2BTHi9oRrgV4LYAMU0g1SOmxef/view?usp=sharing
 
 ---
 
