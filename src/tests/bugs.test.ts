@@ -395,7 +395,7 @@ describe("Bug #4 – POST /api/auth/register (TOCTOU / transaction fix)", () => 
     mockTransaction.mockImplementation(async (cb: (tx: typeof prisma) => Promise<unknown>) => {
       const fakeTx = {
         user: {
-          findUnique: vi.fn().mockResolvedValue({ id: "existing_user" }),
+          findFirst: vi.fn().mockResolvedValue({ id: "existing_user" }),
           create: vi.fn(),
         },
       } as unknown as typeof prisma;
@@ -425,7 +425,7 @@ describe("Bug #4 – POST /api/auth/register (TOCTOU / transaction fix)", () => 
     mockTransaction.mockImplementation(async (cb: (tx: typeof prisma) => Promise<unknown>) => {
       const fakeTx = {
         user: {
-          findUnique: vi.fn().mockResolvedValue(null), // no existing user
+          findFirst: vi.fn().mockResolvedValue(null), // no existing user
           create: vi.fn().mockResolvedValue(createdUser),
         },
       } as unknown as typeof prisma;
