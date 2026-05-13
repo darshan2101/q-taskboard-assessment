@@ -1,9 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { apiFetch } from "@/lib/api-client";
-import type { ApiTask, ApiProjectMember, TaskStatus } from "@/types";
+import type { ApiTask, ApiProjectMember, TaskStatus, ApiComment } from "@/types";
 import { STATUS_LABELS, STATUS_ORDER } from "@/types";
 
 type Props = {
@@ -20,6 +20,30 @@ export function TaskDetail({ task, projectId, members, onClose }: Props) {
   const [status, setStatus] = useState<TaskStatus>(task.status);
   const [assigneeId, setAssigneeId] = useState<string>(task.assigneeId ?? "");
   const [error, setError] = useState<string | null>(null);
+  const [commentBody, setCommentBody] = useState("");
+  const [commentError, setCommentError] = useState<string | null>(null);
+
+  const { data: commentsData, isLoading: commentsLoading } = useQuery({
+    queryKey: ["comments", task.id],
+    queryFn: () => apiFetch<{ comments: ApiComment[] }>(`/api/tasks/${task.id}/comments`),
+  });
+
+  const postComment = useMutation({
+    mutationFn: (body: string) =>
+      apiFetch<{ comment: ApiComment }>(`/api/tasks/${task.id}/comments`, {
+        method: "POST",
+        body: JSON.stringify({ body }),
+      }),
+    onSuccess: () => {
+      setCommentBody("");
+      setCommentError(null);
+      queryClient.invalidateQueries({ queryKey: ["comments", task.id] });
+    },
+    onError: (err) => {
+      const message = err instanceof Error ? err.message : "failed to post";
+      setCommentError(message);
+    },
+  });
 
   const updateTask = useMutation({
     mutationFn: (input: Partial<ApiTask>) =>
@@ -121,6 +145,66 @@ export function TaskDetail({ task, projectId, members, onClose }: Props) {
               ))}
             </select>
           </label>
+        </div>
+
+        <div className="mb-4">
+          <h3 className="text-xs text-muted font-medium mb-2">comments</h3>
+          {commentsLoading ? (
+            <p className="text-sm text-muted">loading comments…</p>
+          ) : (
+            <>
+              {commentsData?.comments.length ? (
+                <div className="space-y-3 mb-3">
+                  {commentsData.comments.map((comment) => (
+                    <div key={comment.id} className="bg-bg border border-border rounded-md p-3">
+                      <div className="flex items-center gap-2 mb-1">
+                        <span className="text-sm font-medium">{comment.author.name}</span>
+                        <span className="text-xs text-muted">
+                          {new Date(comment.createdAt).toLocaleDateString()}
+                        </span>
+                      </div>
+                      <p className="text-sm">{comment.body}</p>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-sm text-muted mb-3">no comments yet</p>
+              )}
+              {commentError === "viewers cannot post comments" ? (
+                <p className="text-sm text-muted">viewers cannot post comments</p>
+              ) : (
+                <form
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    if (!commentBody.trim()) return;
+                    setCommentError(null);
+                    postComment.mutate(commentBody.trim());
+                  }}
+                  className="flex gap-2"
+                >
+                  <textarea
+                    value={commentBody}
+                    onChange={(e) => setCommentBody(e.target.value)}
+                    placeholder="add a comment"
+                    rows={3}
+                    className="flex-1 rounded-md bg-bg border border-border px-3 py-2 text-sm focus:border-accent focus:outline-none"
+                  />
+                  <button
+                    type="submit"
+                    disabled={postComment.isPending || !commentBody.trim()}
+                    className="bg-accent hover:bg-indigo-500 text-white text-sm font-medium rounded-md px-3 py-2 disabled:opacity-50"
+                  >
+                    post
+                  </button>
+                </form>
+              )}
+              {commentError && commentError !== "viewers cannot post comments" && (
+                <p className="text-sm text-red-400 mt-2" role="alert">
+                  {commentError}
+                </p>
+              )}
+            </>
+          )}
         </div>
 
         {error && (

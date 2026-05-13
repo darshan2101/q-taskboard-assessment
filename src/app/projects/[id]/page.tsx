@@ -8,7 +8,7 @@ import { apiFetch, getToken } from "@/lib/api-client";
 import { Header } from "@/components/Header";
 import { StatusColumn } from "@/components/StatusColumn";
 import { TaskDetail } from "@/components/TaskDetail";
-import type { ApiProjectDetail, ApiTask, TaskStatus } from "@/types";
+import type { ApiProjectDetail, ApiTask, TaskStatus, ApiActivityEvent } from "@/types";
 import { STATUS_ORDER } from "@/types";
 
 type PageProps = { params: Promise<{ id: string }> };
@@ -22,6 +22,8 @@ export default function ProjectPage({ params }: PageProps) {
   const [newTitle, setNewTitle] = useState("");
   const [newColumn, setNewColumn] = useState<TaskStatus>("todo");
   const [error, setError] = useState<string | null>(null);
+  const [activeTab, setActiveTab] = useState<"members" | "activity">("members");
+  const [exportResult, setExportResult] = useState<string | null>(null);
 
   useEffect(() => {
     if (!getToken()) router.replace("/login");
@@ -30,6 +32,12 @@ export default function ProjectPage({ params }: PageProps) {
   const { data, isLoading, error: queryError } = useQuery({
     queryKey: ["project", id],
     queryFn: () => apiFetch<{ project: ApiProjectDetail }>(`/api/projects/${id}`),
+  });
+
+  const { data: activityData, isLoading: activityLoading } = useQuery({
+    queryKey: ["activity", id],
+    queryFn: () => apiFetch<{ events: ApiActivityEvent[] }>(`/api/projects/${id}/activity`),
+    enabled: activeTab === "activity",
   });
 
   const createTask = useMutation({
@@ -43,6 +51,20 @@ export default function ProjectPage({ params }: PageProps) {
       queryClient.invalidateQueries({ queryKey: ["project", id] });
     },
     onError: (err) => setError(err instanceof Error ? err.message : "create failed"),
+  });
+
+  const exportToAirtable = useMutation({
+    mutationFn: () => apiFetch<{ success: number; skipped: number; failed: number }>(`/api/export/airtable`, {
+      method: "POST",
+    }),
+    onSuccess: (data) => {
+      setExportResult(`✓ ${data.success} exported, ${data.skipped} skipped, ${data.failed} failed`);
+      setTimeout(() => setExportResult(null), 4000);
+    },
+    onError: () => {
+      setExportResult("export failed");
+      setTimeout(() => setExportResult(null), 4000);
+    },
   });
 
   const project = data?.project;
@@ -90,6 +112,18 @@ export default function ProjectPage({ params }: PageProps) {
                 <p className="text-xs text-muted mt-2">
                   owner: {project.owner.name} · {project.memberships.length} members
                 </p>
+              </div>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => exportToAirtable.mutate()}
+                  disabled={exportToAirtable.isPending}
+                  className="text-xs px-3 py-1.5 rounded border border-border hover:border-muted disabled:opacity-50"
+                >
+                  {exportToAirtable.isPending ? "exporting…" : "export to airtable"}
+                </button>
+                {exportResult && (
+                  <span className="text-xs text-muted">{exportResult}</span>
+                )}
               </div>
             </div>
 
@@ -149,20 +183,75 @@ export default function ProjectPage({ params }: PageProps) {
             </div>
 
             <section className="mt-10">
-              <h2 className="text-sm font-medium mb-3">members</h2>
-              <ul className="bg-surface border border-border rounded-lg divide-y divide-border">
-                {project.memberships.map((m) => (
-                  <li
-                    key={m.id}
-                    className="px-4 py-3 flex items-center justify-between text-sm"
-                  >
-                    <span>{m.user.name}</span>
-                    <span className="text-xs text-muted">
-                      {m.user.email} · {m.role}
-                    </span>
-                  </li>
-                ))}
-              </ul>
+              <div className="flex gap-4 mb-4">
+                <button
+                  onClick={() => setActiveTab("members")}
+                  className={`text-sm pb-1 ${
+                    activeTab === "members"
+                      ? "border-b-2 border-accent text-white"
+                      : "text-muted hover:text-white"
+                  }`}
+                >
+                  members
+                </button>
+                <button
+                  onClick={() => setActiveTab("activity")}
+                  className={`text-sm pb-1 ${
+                    activeTab === "activity"
+                      ? "border-b-2 border-accent text-white"
+                      : "text-muted hover:text-white"
+                  }`}
+                >
+                  activity
+                </button>
+              </div>
+
+              {activeTab === "members" && (
+                <ul className="bg-surface border border-border rounded-lg divide-y divide-border">
+                  {project.memberships.map((m) => (
+                    <li
+                      key={m.id}
+                      className="px-4 py-3 flex items-center justify-between text-sm"
+                    >
+                      <span>{m.user.name}</span>
+                      <span className="text-xs text-muted">
+                        {m.user.email} · {m.role}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              )}
+
+              {activeTab === "activity" && (
+                <>
+                  {activityLoading ? (
+                    <p className="text-muted text-sm">loading activity…</p>
+                  ) : activityData?.events.length ? (
+                    <div className="bg-surface border border-border rounded-lg divide-y divide-border">
+                      {activityData.events.map((event) => (
+                        <div key={event.id} className="px-4 py-3">
+                          <div className="flex items-center gap-2 text-sm mb-1">
+                            <span>{event.actor.name}</span>
+                            <span className="text-muted">·</span>
+                            <span>{event.eventType.replace(/_/g, " ")}</span>
+                            <span className="text-muted">·</span>
+                            <span className="text-xs text-muted">
+                              {new Date(event.createdAt).toLocaleDateString()}
+                            </span>
+                          </div>
+                          {event.eventType === "task_status_changed" && (
+                            <p className="text-xs text-muted ml-4">
+                              from {String(event.payload.from)} → {String(event.payload.to)}
+                            </p>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="text-muted text-sm">no activity yet</p>
+                  )}
+                </>
+              )}
             </section>
           </>
         )}
