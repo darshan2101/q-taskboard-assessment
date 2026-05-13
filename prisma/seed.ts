@@ -6,6 +6,8 @@ const prisma = new PrismaClient();
 async function main() {
   console.log("seeding…");
 
+  await prisma.comment.deleteMany();
+  await prisma.activityEvent.deleteMany();
   await prisma.task.deleteMany();
   await prisma.membership.deleteMany();
   await prisma.project.deleteMany();
