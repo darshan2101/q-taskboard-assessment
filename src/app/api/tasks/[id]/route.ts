@@ -10,6 +10,7 @@ import {
   canEditTasks,
 } from "@/lib/auth";
 import { updateTaskSchema } from "@/schemas/task";
+import { record } from "@/services/activityService";
 
 type Params = { params: Promise<{ id: string }> };
 
@@ -40,6 +41,9 @@ export async function PATCH(req: NextRequest, { params }: Params) {
     },
   });
 
+  record(existing.projectId, task.id, user.id, "task_status_changed", {
+    from: existing.status, to: task.status,
+  }).catch(() => {});
   return NextResponse.json({ task });
 }
 

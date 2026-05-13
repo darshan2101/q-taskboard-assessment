@@ -17,14 +17,16 @@ export async function GET(req: NextRequest, { params }: Params) {
 
   const { id: projectId } = await params;
 
-  // TODO: const membership = await getProjectMembership(user.id, projectId)
-  // TODO: if (!membership) return forbidden("you are not a member of this project")
-  // TODO: const events = await prisma.activityEvent.findMany({
-  //         where: { projectId },
-  //         orderBy: { createdAt: "desc" },
-  //         take: 50,
-  //         include: { actor: { select: { id: true, name: true, email: true } } },
-  //       })
-  // TODO: return NextResponse.json({ events })
+  const membership = await getProjectMembership(user.id, projectId);
+  if (!membership) return forbidden("you are not a member of this project");
+
+  const events = await prisma.activityEvent.findMany({
+    where: { projectId },
+    orderBy: { createdAt: "desc" },
+    take: 50,
+    include: { actor: { select: { id: true, name: true, email: true } } },
+  });
+  return NextResponse.json({ events });
+
   return NextResponse.json({ events: [] });
 }
