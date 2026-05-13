@@ -9,7 +9,7 @@ export async function record(
 ): Promise<void> {
   try {
     await prisma.activityEvent.create({
-      data: { projectId, taskId, actorId, eventType, payload },
+      data: { projectId, taskId, actorId, eventType, payload: payload as object },
     });
   } catch (err) {
     console.error("activity write failed:", err);

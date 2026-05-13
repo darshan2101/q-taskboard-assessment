@@ -16,8 +16,9 @@ export async function POST(req: NextRequest) {
   try{
     const passwordHash = await bcrypt.hash(password, 10);
 
-    const user = await prisma.$transaction(async (tx: typeof prisma) => {
-      const existing = await tx.user.findUnique({ where: { email } });
+    type TxClient = Parameters<Parameters<typeof prisma.$transaction>[0]>[0];
+    const user = await prisma.$transaction(async (tx: TxClient) => {
+      const existing = await tx.user.findFirst({ where: { email } });
       if (existing) {
         throw new Error("user already exists");
       }

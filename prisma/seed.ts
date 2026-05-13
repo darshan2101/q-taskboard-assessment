@@ -1,4 +1,5 @@
 import { PrismaClient } from "@prisma/client";
+type TaskStatus = "todo" | "in_progress" | "review" | "done";
 import bcrypt from "bcryptjs";
 
 const prisma = new PrismaClient();
@@ -73,7 +74,7 @@ async function main() {
     },
   });
 
-  const launchTasks = [
+  const launchTasks: { title: string; status: TaskStatus; assignee: string | null; position: number }[] = [
     { title: "Finalize launch date with marketing", status: "done", assignee: meera.id, position: 0 },
     { title: "Draft press release", status: "review", assignee: arjun.id, position: 1 },
     { title: "Record demo video", status: "in_progress", assignee: kavya.id, position: 2 },
@@ -97,7 +98,7 @@ async function main() {
     });
   }
 
-  const onboardingTasks = [
+  const onboardingTasks: { title: string; status: TaskStatus; assignee: string | null; position: number }[] = [
     { title: "Map current onboarding funnel", status: "done", assignee: arjun.id, position: 0 },
     { title: "Interview 5 recently-onboarded customers", status: "review", assignee: lina.id, position: 1 },
     { title: "Wireframe new welcome screens", status: "in_progress", assignee: meera.id, position: 2 },
