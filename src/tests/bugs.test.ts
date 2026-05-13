@@ -52,6 +52,11 @@ vi.mock("@/lib/jwt", async (importOriginal) => {
   };
 });
 
+// activityService is called on PATCH task — mock to silence noise
+vi.mock("@/services/activityService", () => ({
+  record: vi.fn().mockResolvedValue(undefined),
+}));
+
 // ---------------------------------------------------------------------------
 // Lazy-import helpers (must come after vi.mock declarations)
 // ---------------------------------------------------------------------------
